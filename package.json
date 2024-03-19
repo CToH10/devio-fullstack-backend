@@ -10,6 +10,10 @@
     "tsc": "tsc",
     "dev": "tsnd --rs --cls --ignore-watch node_modules src/server.ts"
   },
+  "prisma": {
+    "schema": "./src/prisma/schema.prisma"
+  },
+
   "devDependencies": {
     "@commitlint/cli": "^19.2.0",
     "@commitlint/config-conventional": "^19.1.0",
