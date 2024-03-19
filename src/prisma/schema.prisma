@@ -38,6 +38,7 @@ model orders {
   product_orders product_orders[]
   created_at     DateTime         @default(now())
   updated_at     DateTime         @updatedAt
+  client         String           @db.VarChar(120)
 }
 
 model product_orders {
