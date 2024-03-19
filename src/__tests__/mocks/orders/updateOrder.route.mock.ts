@@ -1,14 +1,16 @@
+import { OrderStatusEnum } from '@prisma/client';
+
 export default {
   orderPreparing: {
-    status: 'preparing',
+    status: OrderStatusEnum.preparing,
   },
   orderReady: {
-    status: 'ready',
+    status: OrderStatusEnum.ready,
   },
   orderFinished: {
-    status: 'finished',
+    status: OrderStatusEnum.finished,
   },
   orderOrderingInvalid: {
-    status: 'ordering',
+    status: OrderStatusEnum.ordering,
   },
 };
