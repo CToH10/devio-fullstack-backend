@@ -36,7 +36,7 @@ model product {
 model orders {
   id                String           @id @default(uuid())
   status            OrderStatusEnum  @default(ordering)
-  products_id       String
+  products_id       String[]
   product_orders    product_orders[]
   created_at        DateTime         @default(now())
   updated_at        DateTime         @updatedAt

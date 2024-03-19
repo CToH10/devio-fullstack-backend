@@ -2,7 +2,9 @@ import { z } from 'zod';
 
 export const orderRequestSchema = z.object({
   client: z.string().max(120),
-  products_id: z.array(z.object({ id: z.string() })),
+  products: z.array(
+    z.object({ products_id: z.string(), quantity: z.number().min(0).int() }),
+  ),
 });
 
 export const orderReturnSchema = orderRequestSchema.extend({
@@ -12,12 +14,16 @@ export const orderReturnSchema = orderRequestSchema.extend({
   reason_of_refusal: z.string().optional(),
   products: z.array(
     z.object({
-      id: z.string().uuid(),
-      name: z.string(),
-      description: z.string(),
-      cover_image: z.string(),
-      category: z.string(),
-      price: z.number().int(),
+      product: z.object({
+        id: z.string().uuid(),
+        name: z.string(),
+        description: z.string(),
+        cover_image: z.string(),
+        category: z.string(),
+        price: z.number(),
+      }),
+      quantity: z.number().min(0).int(),
     }),
   ),
+  priceTotal: z.number(),
 });
