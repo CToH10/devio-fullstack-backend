@@ -47,4 +47,5 @@ model product_orders {
   order      orders  @relation(fields: [order_id], references: [id])
   product_id String
   product    product @relation(fields: [product_id], references: [id])
+  quantity   Int     @db.Integer()
 }
