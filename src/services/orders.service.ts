@@ -12,9 +12,13 @@ export const createOrderService = async (data: OrderRequestType) => {
       client,
       products_id: idList,
       product_orders: {
-        create: {
-          quantity: products[0].quantity,
-          product_id: products[0].products_id,
+        createMany: {
+          data: products.map(prod => {
+            return {
+              product_id: prod.products_id,
+              quantity: prod.quantity,
+            };
+          }),
         },
       },
     },
@@ -24,7 +28,24 @@ export const createOrderService = async (data: OrderRequestType) => {
 };
 
 export const listAllOrdersService = async () => {
-  const list = await prisma.orders.findMany();
+  const list = await prisma.orders.findMany({
+    select: {
+      id: true,
+      client: true,
+      created_at: true,
+      updated_at: true,
+      status: true,
+      product_orders: {
+        select: {
+          id: true,
+          quantity: true,
+          product: {
+            select: { name: true, cover_image: true, price: true, id: true },
+          },
+        },
+      },
+    },
+  });
 
   return list;
 };
