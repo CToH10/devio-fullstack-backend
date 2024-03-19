@@ -12,6 +12,7 @@
     "test": "jest"
   },
   "prisma": {
+    "seed": "ts-node ./src/prisma/seed.ts",
     "schema": "./src/prisma/schema.prisma"
   },
   "devDependencies": {
@@ -20,7 +21,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.29",
+    "@types/node": "^20.11.30",
     "@types/pg": "^8.11.2",
     "@typescript-eslint/eslint-plugin": "^7.3.0",
     "@typescript-eslint/parser": "^7.3.0",
@@ -40,6 +41,7 @@
     "superagent": "^8.1.2",
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.2"
   },
