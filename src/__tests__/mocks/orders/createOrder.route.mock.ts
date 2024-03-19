@@ -6,6 +6,7 @@ type OrderStatusMock = 'ordering' | 'preparing' | 'ready' | 'finished';
 export default {
   orderComplete: {
     id: randomUUID(),
+    reason_of_refusal: null,
     status: OrderStatusEnum as unknown as OrderStatusMock,
     created_at: new Date(),
     updated_at: new Date(),
@@ -14,6 +15,7 @@ export default {
   },
   orderWithoutClient: {
     id: randomUUID(),
+    reason_of_refusal: null,
     status: OrderStatusEnum as unknown as OrderStatusMock,
     created_at: new Date(),
     updated_at: new Date(),
@@ -21,6 +23,7 @@ export default {
   },
   orderWithoutProducts: {
     id: randomUUID(),
+    reason_of_refusal: null,
     status: OrderStatusEnum as unknown as OrderStatusMock,
     created_at: new Date(),
     updated_at: new Date(),
@@ -28,6 +31,7 @@ export default {
   },
   orderInvalidProducts: {
     id: randomUUID(),
+    reason_of_refusal: null,
     status: OrderStatusEnum as unknown as OrderStatusMock,
     created_at: new Date(),
     updated_at: new Date(),
@@ -36,6 +40,7 @@ export default {
   },
   orderInvalidClient: {
     id: randomUUID(),
+    reason_of_refusal: null,
     status: OrderStatusEnum as unknown as OrderStatusMock,
     created_at: new Date(),
     updated_at: new Date(),

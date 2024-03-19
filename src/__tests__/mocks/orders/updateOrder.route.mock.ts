@@ -13,4 +13,7 @@ export default {
   orderOrderingInvalid: {
     status: OrderStatusEnum.ordering,
   },
+  orderRefused: {
+    status: OrderStatusEnum.refused,
+  },
 };
