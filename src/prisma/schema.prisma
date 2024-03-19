@@ -12,6 +12,7 @@ enum OrderStatusEnum {
   preparing
   ready
   finished
+  refused
 }
 
 model product {
@@ -32,13 +33,14 @@ model category {
 }
 
 model orders {
-  id             String           @id @default(uuid())
-  status         OrderStatusEnum  @default(ordering)
-  products_id    String
-  product_orders product_orders[]
-  created_at     DateTime         @default(now())
-  updated_at     DateTime         @updatedAt
-  client         String           @db.VarChar(120)
+  id                String           @id @default(uuid())
+  status            OrderStatusEnum  @default(ordering)
+  products_id       String
+  product_orders    product_orders[]
+  created_at        DateTime         @default(now())
+  updated_at        DateTime         @updatedAt
+  client            String           @db.VarChar(120)
+  reason_of_refusal String?          @db.VarChar(140)
 }
 
 model product_orders {
