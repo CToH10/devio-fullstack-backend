@@ -15,21 +15,22 @@ enum OrderStatusEnum {
   refused
 }
 
+enum CategoriesEnum {
+  side
+  drink
+  dessert
+  combo
+}
+
 model product {
   id             String           @id @default(uuid())
   name           String           @unique @db.VarChar(50)
   description    String           @db.VarChar(100)
   price          Int              @db.Integer()
-  cover_image    String           @db.VarChar(200)
-  category       category         @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  category_id    String           @db.VarChar(120)
+  cover_image    String           @db.VarChar(300)
+  category       CategoriesEnum   @default(side)
   product_orders product_orders[]
-}
-
-model category {
-  id       String    @id @default(uuid())
-  name     String    @unique @db.VarChar(50)
-  products product[]
+  combo          Boolean          @default(false)
 }
 
 model orders {
