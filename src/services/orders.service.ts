@@ -119,9 +119,40 @@ export const updateOrderService = async (
 };
 
 export const listAOrderService = async (id: string) => {
-  const order = await prisma.orders.findFirst({ where: { id } });
+  const order = await prisma.orders.findFirstOrThrow({
+    where: { id },
+    select: {
+      id: true,
+      client: true,
+      created_at: true,
+      updated_at: true,
+      status: true,
+      product_orders: {
+        select: {
+          id: true,
+          quantity: true,
+          product: {
+            select: {
+              name: true,
+              cover_image: true,
+              price: true,
+              id: true,
+              category: true,
+            },
+          },
+        },
+      },
+    },
+  });
 
-  return order;
+  const priceTotal = order.product_orders.reduce(
+    (acc, curr) => acc + curr.quantity * curr.product.price,
+    0,
+  );
+
+  const returnObj = { ...order, priceTotal };
+
+  return orderReturnSchema.parse(returnObj);
 };
 
 export const listAllUnfinishedService = async () => {

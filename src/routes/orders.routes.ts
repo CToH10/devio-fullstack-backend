@@ -2,6 +2,7 @@
 import { Router } from 'express';
 import {
   createOrderController,
+  listAOrderController,
   listAllFinishedController,
   listAllOrdersController,
   listAllRefusedController,
@@ -26,3 +27,4 @@ orderRoutes.patch(
 orderRoutes.get('/unfinished', listAllUnfinishedController);
 orderRoutes.get('/finished', listAllFinishedController);
 orderRoutes.get('/refused', listAllRefusedController);
+orderRoutes.get('/:id', listAOrderController);
