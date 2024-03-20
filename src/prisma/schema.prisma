@@ -40,7 +40,7 @@ model orders {
   product_orders    product_orders[]
   created_at        DateTime         @default(now())
   updated_at        DateTime         @updatedAt
-  client            String           @db.VarChar(120)
+  client            String           @default("Nome não informado") @db.VarChar(120)
   reason_of_refusal String?          @db.VarChar(140)
   code              Int              @default(autoincrement()) @db.Integer()
   comment           String?          @db.VarChar(200)
