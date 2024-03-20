@@ -5,3 +5,4 @@ import { listAllProductsController } from '../controllers/products.controller';
 export const productsRoutes: Router = Router();
 
 productsRoutes.get('', listAllProductsController);
+productsRoutes.get('/:search', listAllProductsController);
