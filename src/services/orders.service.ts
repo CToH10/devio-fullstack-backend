@@ -34,6 +34,8 @@ export const createOrderService = async (data: OrderRequestType) => {
       client: true,
       created_at: true,
       updated_at: true,
+      comment: true,
+      code: true,
       status: true,
       product_orders: {
         select: {
@@ -70,6 +72,8 @@ export const listAllOrdersService = async () => {
       client: true,
       created_at: true,
       updated_at: true,
+      comment: true,
+      code: true,
       status: true,
       product_orders: {
         select: {
@@ -126,6 +130,8 @@ export const listAOrderService = async (id: string) => {
       client: true,
       created_at: true,
       updated_at: true,
+      comment: true,
+      code: true,
       status: true,
       product_orders: {
         select: {
@@ -165,6 +171,8 @@ export const listAllUnfinishedService = async () => {
       client: true,
       created_at: true,
       updated_at: true,
+      comment: true,
+      code: true,
       status: true,
       product_orders: {
         select: {
@@ -212,6 +220,8 @@ export const listAllFinishedService = async () => {
       client: true,
       created_at: true,
       updated_at: true,
+      comment: true,
+      code: true,
       status: true,
       product_orders: {
         select: {
@@ -259,6 +269,8 @@ export const listAllRefusedService = async () => {
       client: true,
       created_at: true,
       updated_at: true,
+      comment: true,
+      code: true,
       status: true,
       product_orders: {
         select: {

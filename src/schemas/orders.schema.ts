@@ -5,6 +5,7 @@ export const orderRequestSchema = z.object({
   products: z.array(
     z.object({ products_id: z.string(), quantity: z.number().min(0).int() }),
   ),
+  comment: z.string().max(200).optional().nullish(),
 });
 
 export const orderReturnSchema = orderRequestSchema
@@ -27,6 +28,7 @@ export const orderReturnSchema = orderRequestSchema
       }),
     ),
     priceTotal: z.number(),
+    code: z.number().int(),
   })
   .omit({ products: true });
 
