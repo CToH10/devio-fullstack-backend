@@ -1,6 +1,7 @@
 /* eslint-disable import/extensions */
 import cors from 'cors';
 import express, { Application, Request } from 'express';
+import 'express-async-errors';
 import { ErrorHandler } from './errors';
 import { orderRoutes } from './routes/orders.routes';
 import { productsRoutes } from './routes/products.routes';
