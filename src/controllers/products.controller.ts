@@ -7,7 +7,12 @@ export const listAllProductsController = async (
   response: Response,
 ): Promise<Response> => {
   const { search } = request.params;
-  const list = await listAllProductsService(search);
+  const { perPage, page } = request.query;
+  const list = await listAllProductsService(
+    search,
+    Number(perPage),
+    Number(page),
+  );
 
   return response.json(list);
 };
