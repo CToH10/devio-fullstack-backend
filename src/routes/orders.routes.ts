@@ -4,6 +4,7 @@ import {
   createOrderController,
   listAllFinishedController,
   listAllOrdersController,
+  listAllRefusedController,
   listAllUnfinishedController,
   updateOrderControler,
 } from '../controllers/orders.controller';
@@ -24,3 +25,4 @@ orderRoutes.patch(
 );
 orderRoutes.get('/unfinished', listAllUnfinishedController);
 orderRoutes.get('/finished', listAllFinishedController);
+orderRoutes.get('/refused', listAllRefusedController);

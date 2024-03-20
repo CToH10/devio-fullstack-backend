@@ -135,5 +135,35 @@ export const listAllFinishedService = async () => {
 
   return listReturn;
 };
-// list all finished
-// list refused
+
+export const listAllRefusedService = async () => {
+  const list = await prisma.orders.findMany({
+    where: {
+      status: 'refused',
+    },
+    select: {
+      id: true,
+      client: true,
+      created_at: true,
+      updated_at: true,
+      status: true,
+      product_orders: {
+        select: {
+          id: true,
+          quantity: true,
+          product: {
+            select: { name: true, cover_image: true, price: true, id: true },
+          },
+        },
+      },
+      reason_of_refusal: true,
+    },
+  });
+
+  const listReturn = {
+    count: list.length,
+    data: list,
+  };
+
+  return listReturn;
+};

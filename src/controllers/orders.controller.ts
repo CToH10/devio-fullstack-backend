@@ -4,6 +4,7 @@ import {
   createOrderService,
   listAllFinishedService,
   listAllOrdersService,
+  listAllRefusedService,
   listAllUnfinishedService,
   updateOrderService,
 } from '../services/orders.service';
@@ -53,4 +54,13 @@ export const listAllFinishedController = async (
   const listFinished = await listAllFinishedService();
 
   return response.json(listFinished);
+};
+
+export const listAllRefusedController = async (
+  request: Request,
+  response: Response,
+) => {
+  const listRefused = await listAllRefusedService();
+
+  return response.json(listRefused);
 };
