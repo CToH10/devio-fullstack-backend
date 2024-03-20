@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import {
   createOrderService,
+  listAllFinishedService,
   listAllOrdersService,
   listAllUnfinishedService,
   updateOrderService,
@@ -43,4 +44,13 @@ export const listAllUnfinishedController = async (
   const listUnfinished = await listAllUnfinishedService();
 
   return response.json(listUnfinished);
+};
+
+export const listAllFinishedController = async (
+  request: Request,
+  response: Response,
+) => {
+  const listFinished = await listAllFinishedService();
+
+  return response.json(listFinished);
 };

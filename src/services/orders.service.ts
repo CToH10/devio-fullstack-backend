@@ -104,6 +104,36 @@ export const listAllUnfinishedService = async () => {
 
   return listReturn;
 };
-// list all not finished
+
+export const listAllFinishedService = async () => {
+  const list = await prisma.orders.findMany({
+    where: {
+      status: 'finished',
+    },
+    select: {
+      id: true,
+      client: true,
+      created_at: true,
+      updated_at: true,
+      status: true,
+      product_orders: {
+        select: {
+          id: true,
+          quantity: true,
+          product: {
+            select: { name: true, cover_image: true, price: true, id: true },
+          },
+        },
+      },
+    },
+  });
+
+  const listReturn = {
+    count: list.length,
+    data: list,
+  };
+
+  return listReturn;
+};
 // list all finished
 // list refused
