@@ -1,5 +1,6 @@
 /* eslint-disable import/extensions */
 import prisma from '../client';
+import { AppError } from '../errors';
 import {
   OrderRequestType,
   OrderUpdateRequestType,
@@ -108,18 +109,61 @@ export const listAllOrdersService = async () => {
 };
 
 export const updateOrderService = async (
-  data: OrderUpdateRequestType,
+  requestData: OrderUpdateRequestType,
   id: string,
 ) => {
+  const { status, client } = requestData;
+  if (status === 'preparing' && !client) {
+    throw new AppError('Necessário informar nome do cliente');
+  }
+  const data = client
+    ? {
+        reason_of_refusal: requestData.reason_of_refusal || null,
+        status,
+        client,
+      }
+    : {
+        reason_of_refusal: requestData.reason_of_refusal || null,
+        status,
+      };
+
   const updatedOrder = await prisma.orders.update({
     where: { id },
-    data: {
-      reason_of_refusal: data.reason_of_refusal || null,
-      status: data.status,
+    data,
+    select: {
+      id: true,
+      client: true,
+      created_at: true,
+      updated_at: true,
+      comment: true,
+      code: true,
+      status: true,
+      product_orders: {
+        select: {
+          id: true,
+          quantity: true,
+          product: {
+            select: {
+              name: true,
+              cover_image: true,
+              price: true,
+              id: true,
+              category: true,
+            },
+          },
+        },
+      },
     },
   });
 
-  return orderReturnSchema.parse(updatedOrder);
+  const priceTotal = updatedOrder.product_orders.reduce(
+    (acc, curr) => acc + curr.quantity * curr.product.price,
+    0,
+  );
+
+  const returnObj = { ...updatedOrder, priceTotal };
+
+  return orderReturnSchema.parse(returnObj);
 };
 
 export const listAOrderService = async (id: string) => {

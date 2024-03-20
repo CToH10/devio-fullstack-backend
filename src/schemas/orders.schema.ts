@@ -29,13 +29,14 @@ export const orderReturnSchema = orderRequestSchema
     ),
     priceTotal: z.number(),
     code: z.number().int(),
+    status: z.string(),
   })
   .omit({ products: true });
 
 export const updateOrderRequestSchema = z.object({
   status: z.enum(['ready', 'finished', 'preparing', 'refused']),
   reason_of_refusal: z.string().max(140).optional(),
-  client: z.string().max(120).optional(),
+  client: z.string().max(120).nullable().default(''),
 });
 
 export const orderReturnListSchema = z.array(orderReturnSchema);
