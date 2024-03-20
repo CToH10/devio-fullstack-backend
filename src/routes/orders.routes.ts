@@ -3,6 +3,7 @@ import { Router } from 'express';
 import {
   createOrderController,
   listAllOrdersController,
+  listAllUnfinishedController,
   updateOrderControler,
 } from '../controllers/orders.controller';
 import { protectData } from '../middlewares/protectData.middleware';
@@ -20,3 +21,4 @@ orderRoutes.patch(
   protectData(updateOrderRequestSchema),
   updateOrderControler,
 );
+orderRoutes.get('/unfinished', listAllUnfinishedController);

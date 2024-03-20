@@ -67,3 +67,43 @@ export const updateOrderService = async (
 
   return updatedOrder;
 };
+
+export const listAOrderService = async (id: string) => {
+  const order = await prisma.orders.findFirst({ where: { id } });
+
+  return order;
+};
+
+export const listAllUnfinishedService = async () => {
+  const list = await prisma.orders.findMany({
+    where: {
+      status: { not: 'finished' },
+    },
+    select: {
+      id: true,
+      client: true,
+      created_at: true,
+      updated_at: true,
+      status: true,
+      product_orders: {
+        select: {
+          id: true,
+          quantity: true,
+          product: {
+            select: { name: true, cover_image: true, price: true, id: true },
+          },
+        },
+      },
+    },
+  });
+
+  const listReturn = {
+    count: list.length,
+    data: list,
+  };
+
+  return listReturn;
+};
+// list all not finished
+// list all finished
+// list refused
