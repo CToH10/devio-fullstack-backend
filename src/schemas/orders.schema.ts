@@ -27,3 +27,8 @@ export const orderReturnSchema = orderRequestSchema.extend({
   ),
   priceTotal: z.number(),
 });
+
+export const updateOrderRequestSchema = z.object({
+  status: z.enum(['ready', 'finished', 'preparing', 'refused']),
+  reason_of_refusal: z.string().max(140).optional(),
+});

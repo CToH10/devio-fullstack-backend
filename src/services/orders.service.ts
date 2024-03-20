@@ -1,6 +1,9 @@
 /* eslint-disable import/extensions */
 import prisma from '../client';
-import { OrderRequestType } from '../interfaces/orders.interfaces';
+import {
+  OrderRequestType,
+  OrderUpdateRequestType,
+} from '../interfaces/orders.interfaces';
 
 export const createOrderService = async (data: OrderRequestType) => {
   const { client, products } = data;
@@ -48,4 +51,19 @@ export const listAllOrdersService = async () => {
   });
 
   return list;
+};
+
+export const updateOrderService = async (
+  data: OrderUpdateRequestType,
+  id: string,
+) => {
+  const updatedOrder = await prisma.orders.update({
+    where: { id },
+    data: {
+      reason_of_refusal: data.reason_of_refusal || null,
+      status: data.status,
+    },
+  });
+
+  return updatedOrder;
 };
