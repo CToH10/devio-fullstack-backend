@@ -42,6 +42,8 @@ model orders {
   updated_at        DateTime         @updatedAt
   client            String           @db.VarChar(120)
   reason_of_refusal String?          @db.VarChar(140)
+  code              Int              @default(autoincrement()) @db.Integer()
+  comment           String?          @db.VarChar(200)
 }
 
 model product_orders {
