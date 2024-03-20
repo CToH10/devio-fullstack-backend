@@ -4,6 +4,7 @@ import {
   OrderRequestType,
   OrderUpdateRequestType,
 } from '../interfaces/orders.interfaces';
+import { orderReturnListSchema } from '../schemas/orders.schema';
 
 export const createOrderService = async (data: OrderRequestType) => {
   const { client, products } = data;
@@ -43,14 +44,32 @@ export const listAllOrdersService = async () => {
           id: true,
           quantity: true,
           product: {
-            select: { name: true, cover_image: true, price: true, id: true },
+            select: {
+              name: true,
+              cover_image: true,
+              price: true,
+              id: true,
+              category: true,
+            },
           },
         },
       },
     },
   });
 
-  return list;
+  const pricedList = list.map(order => {
+    const priceTotal = order.product_orders.reduce(
+      (acc, curr) => acc + curr.quantity * curr.product.price,
+      0,
+    );
+
+    return { ...order, priceTotal };
+  });
+
+  const parsedList = orderReturnListSchema.parse(pricedList);
+
+  return parsedList;
+  // return pricedList;
 };
 
 export const updateOrderService = async (
@@ -90,16 +109,32 @@ export const listAllUnfinishedService = async () => {
           id: true,
           quantity: true,
           product: {
-            select: { name: true, cover_image: true, price: true, id: true },
+            select: {
+              name: true,
+              cover_image: true,
+              price: true,
+              id: true,
+              description: true,
+              category: true,
+            },
           },
         },
       },
     },
   });
 
+  const pricedList = list.map(order => {
+    const priceTotal = order.product_orders.reduce(
+      (acc, curr) => acc + curr.quantity * curr.product.price,
+      0,
+    );
+
+    return { ...order, priceTotal };
+  });
+
   const listReturn = {
     count: list.length,
-    data: list,
+    data: orderReturnListSchema.parse(pricedList),
   };
 
   return listReturn;
@@ -121,16 +156,32 @@ export const listAllFinishedService = async () => {
           id: true,
           quantity: true,
           product: {
-            select: { name: true, cover_image: true, price: true, id: true },
+            select: {
+              name: true,
+              cover_image: true,
+              price: true,
+              id: true,
+              description: true,
+              category: true,
+            },
           },
         },
       },
     },
   });
 
+  const pricedList = list.map(order => {
+    const priceTotal = order.product_orders.reduce(
+      (acc, curr) => acc + curr.quantity * curr.product.price,
+      0,
+    );
+
+    return { ...order, priceTotal };
+  });
+
   const listReturn = {
     count: list.length,
-    data: list,
+    data: orderReturnListSchema.parse(pricedList),
   };
 
   return listReturn;
@@ -152,7 +203,14 @@ export const listAllRefusedService = async () => {
           id: true,
           quantity: true,
           product: {
-            select: { name: true, cover_image: true, price: true, id: true },
+            select: {
+              name: true,
+              cover_image: true,
+              price: true,
+              id: true,
+              description: true,
+              category: true,
+            },
           },
         },
       },
@@ -160,9 +218,18 @@ export const listAllRefusedService = async () => {
     },
   });
 
+  const pricedList = list.map(order => {
+    const priceTotal = order.product_orders.reduce(
+      (acc, curr) => acc + curr.quantity * curr.product.price,
+      0,
+    );
+
+    return { ...order, priceTotal };
+  });
+
   const listReturn = {
     count: list.length,
-    data: list,
+    data: orderReturnListSchema.parse(pricedList),
   };
 
   return listReturn;
