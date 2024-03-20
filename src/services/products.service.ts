@@ -3,13 +3,19 @@ import prisma from '../client';
 import { AppError } from '../errors';
 
 export const listAllProductsService = async (
-  searchParam: CategoriesEnum | undefined,
+  searchParam: CategoriesEnum | undefined | string,
 ) => {
   let query: Prisma.productFindManyArgs;
 
   if (searchParam) {
     if (searchParam in CategoriesEnum) {
-      query = { where: { category: searchParam } };
+      const category =
+        (CategoriesEnum.drink === searchParam && CategoriesEnum.drink) ||
+        (CategoriesEnum.side === searchParam && CategoriesEnum.side) ||
+        (CategoriesEnum.dessert === searchParam && CategoriesEnum.dessert) ||
+        (CategoriesEnum.combo === searchParam && CategoriesEnum.combo);
+
+      query = category ? { where: { category } } : { where: {} };
 
       const searchParamList = await prisma.$transaction([
         prisma.product.findMany(query),
