@@ -95,6 +95,9 @@ export const listAllOrdersService = async () => {
         },
       },
     },
+    orderBy: {
+      code: 'asc',
+    },
   });
 
   const pricedList = list.map(order => {
@@ -249,6 +252,9 @@ export const listAllCheckoutService = async () => {
         },
       },
     },
+    orderBy: {
+      code: 'asc',
+    },
   });
 
   const pricedList = list.map(order => {
@@ -297,6 +303,9 @@ export const listAllFinishedService = async () => {
           },
         },
       },
+    },
+    orderBy: {
+      code: 'asc',
     },
   });
 
@@ -347,6 +356,9 @@ export const listAllRefusedService = async () => {
         },
       },
       reason_of_refusal: true,
+    },
+    orderBy: {
+      code: 'asc',
     },
   });
 
