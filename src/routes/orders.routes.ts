@@ -3,10 +3,10 @@ import { Router } from 'express';
 import {
   createOrderController,
   listAOrderController,
+  listAllCheckoutController,
   listAllFinishedController,
   listAllOrdersController,
   listAllRefusedController,
-  listAllUnfinishedController,
   updateOrderControler,
 } from '../controllers/orders.controller';
 import { protectData } from '../middlewares/protectData.middleware';
@@ -24,7 +24,7 @@ orderRoutes.patch(
   protectData(updateOrderRequestSchema),
   updateOrderControler,
 );
-orderRoutes.get('/unfinished', listAllUnfinishedController);
+orderRoutes.get('/checkout', listAllCheckoutController);
 orderRoutes.get('/finished', listAllFinishedController);
 orderRoutes.get('/refused', listAllRefusedController);
 orderRoutes.get('/:id', listAOrderController);

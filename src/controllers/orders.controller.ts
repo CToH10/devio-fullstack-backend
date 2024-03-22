@@ -3,10 +3,10 @@ import { Request, Response } from 'express';
 import {
   createOrderService,
   listAOrderService,
+  listAllCheckoutService,
   listAllFinishedService,
   listAllOrdersService,
   listAllRefusedService,
-  listAllUnfinishedService,
   updateOrderService,
 } from '../services/orders.service';
 
@@ -39,13 +39,13 @@ export const updateOrderControler = async (
   return response.json(updatedOrder);
 };
 
-export const listAllUnfinishedController = async (
+export const listAllCheckoutController = async (
   request: Request,
   response: Response,
 ) => {
-  const listUnfinished = await listAllUnfinishedService();
+  const listCheckout = await listAllCheckoutService();
 
-  return response.json(listUnfinished);
+  return response.json(listCheckout);
 };
 
 export const listAllFinishedController = async (

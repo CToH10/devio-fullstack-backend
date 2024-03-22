@@ -205,10 +205,21 @@ export const listAOrderService = async (id: string) => {
   return orderReturnSchema.parse(returnObj);
 };
 
-export const listAllUnfinishedService = async () => {
+export const listAllCheckoutService = async () => {
   const list = await prisma.orders.findMany({
     where: {
-      status: { not: 'finished' },
+      NOT: [
+        {
+          OR: [
+            {
+              status: 'ordering',
+            },
+            {
+              status: 'finished',
+            },
+          ],
+        },
+      ],
     },
     select: {
       id: true,
