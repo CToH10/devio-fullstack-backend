@@ -5,7 +5,7 @@ export const orderRequestSchema = z.object({
   products: z.array(
     z.object({ products_id: z.string(), quantity: z.number().min(0).int() }),
   ),
-  comment: z.string().max(200).optional().nullish(),
+  comment: z.string().max(200).nullish(),
 });
 
 export const orderReturnSchema = orderRequestSchema

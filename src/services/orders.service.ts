@@ -11,13 +11,16 @@ import {
 } from '../schemas/orders.schema';
 
 export const createOrderService = async (data: OrderRequestType) => {
-  const { client, products } = data;
+  const { client, products, comment } = data;
+
+  const normalizedComment = comment === undefined ? null : comment;
 
   const idList = products.map(prod => prod.products_id);
 
   const createOrder = await prisma.orders.create({
     data: {
       client,
+      comment: normalizedComment,
       products_id: idList,
       product_orders: {
         createMany: {
