@@ -11,16 +11,13 @@ import {
 } from '../schemas/orders.schema';
 
 export const createOrderService = async (data: OrderRequestType) => {
-  const { client, products, comment } = data;
-
-  const normalizedComment = comment === undefined ? null : comment;
+  const { client, products } = data;
 
   const idList = products.map(prod => prod.products_id);
 
   const createOrder = await prisma.orders.create({
     data: {
       client,
-      comment: normalizedComment,
       products_id: idList,
       product_orders: {
         createMany: {
@@ -28,6 +25,7 @@ export const createOrderService = async (data: OrderRequestType) => {
             return {
               product_id: prod.products_id,
               quantity: prod.quantity,
+              comment: prod.comment === undefined ? null : prod.comment,
             };
           }),
         },
@@ -38,13 +36,13 @@ export const createOrderService = async (data: OrderRequestType) => {
       client: true,
       created_at: true,
       updated_at: true,
-      comment: true,
       code: true,
       status: true,
       product_orders: {
         select: {
           id: true,
           quantity: true,
+          comment: true,
           product: {
             select: {
               name: true,
@@ -60,7 +58,7 @@ export const createOrderService = async (data: OrderRequestType) => {
   });
 
   const priceTotal = createOrder.product_orders.reduce(
-    (acc, curr) => acc + curr.quantity * curr.product.price,
+    (acc: number, curr) => acc + curr.quantity * curr.product.price,
     0,
   );
 
@@ -76,13 +74,13 @@ export const listAllOrdersService = async () => {
       client: true,
       created_at: true,
       updated_at: true,
-      comment: true,
       code: true,
       status: true,
       product_orders: {
         select: {
           id: true,
           quantity: true,
+          comment: true,
           product: {
             select: {
               name: true,
@@ -102,7 +100,7 @@ export const listAllOrdersService = async () => {
 
   const pricedList = list.map(order => {
     const priceTotal = order.product_orders.reduce(
-      (acc, curr) => acc + curr.quantity * curr.product.price,
+      (acc: number, curr) => acc + curr.quantity * curr.product.price,
       0,
     );
 
@@ -114,12 +112,57 @@ export const listAllOrdersService = async () => {
   return parsedList;
 };
 
+export const listAOrderService = async (id: string) => {
+  const order = await prisma.orders.findFirstOrThrow({
+    where: { id },
+    select: {
+      id: true,
+      client: true,
+      created_at: true,
+      updated_at: true,
+      code: true,
+      status: true,
+      product_orders: {
+        select: {
+          id: true,
+          quantity: true,
+          comment: true,
+          product: {
+            select: {
+              name: true,
+              cover_image: true,
+              price: true,
+              id: true,
+              category: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const priceTotal = order.product_orders.reduce(
+    (acc: number, curr) => acc + curr.quantity * curr.product.price,
+    0,
+  );
+
+  const returnObj = { ...order, priceTotal };
+
+  return orderReturnSchema.parse(returnObj);
+};
+
 export const updateOrderService = async (
   requestData: OrderUpdateRequestType,
   id: string,
 ) => {
   const { status, client } = requestData;
-  if (status === 'preparing' && !client) {
+  const clientOrder = await (await listAOrderService(id)).client;
+  if (
+    status === 'preparing' &&
+    !client &&
+    status === 'preparing' &&
+    !clientOrder
+  ) {
     throw new AppError('Necessário informar nome do cliente');
   }
   const data = client
@@ -141,13 +184,13 @@ export const updateOrderService = async (
       client: true,
       created_at: true,
       updated_at: true,
-      comment: true,
       code: true,
       status: true,
       product_orders: {
         select: {
           id: true,
           quantity: true,
+          comment: true,
           product: {
             select: {
               name: true,
@@ -163,50 +206,11 @@ export const updateOrderService = async (
   });
 
   const priceTotal = updatedOrder.product_orders.reduce(
-    (acc, curr) => acc + curr.quantity * curr.product.price,
+    (acc: number, curr) => acc + curr.quantity * curr.product.price,
     0,
   );
 
   const returnObj = { ...updatedOrder, priceTotal };
-
-  return orderReturnSchema.parse(returnObj);
-};
-
-export const listAOrderService = async (id: string) => {
-  const order = await prisma.orders.findFirstOrThrow({
-    where: { id },
-    select: {
-      id: true,
-      client: true,
-      created_at: true,
-      updated_at: true,
-      comment: true,
-      code: true,
-      status: true,
-      product_orders: {
-        select: {
-          id: true,
-          quantity: true,
-          product: {
-            select: {
-              name: true,
-              cover_image: true,
-              price: true,
-              id: true,
-              category: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const priceTotal = order.product_orders.reduce(
-    (acc, curr) => acc + curr.quantity * curr.product.price,
-    0,
-  );
-
-  const returnObj = { ...order, priceTotal };
 
   return orderReturnSchema.parse(returnObj);
 };
@@ -232,13 +236,13 @@ export const listAllCheckoutService = async () => {
       client: true,
       created_at: true,
       updated_at: true,
-      comment: true,
       code: true,
       status: true,
       product_orders: {
         select: {
           id: true,
           quantity: true,
+          comment: true,
           product: {
             select: {
               name: true,
@@ -259,7 +263,7 @@ export const listAllCheckoutService = async () => {
 
   const pricedList = list.map(order => {
     const priceTotal = order.product_orders.reduce(
-      (acc, curr) => acc + curr.quantity * curr.product.price,
+      (acc: number, curr) => acc + curr.quantity * curr.product.price,
       0,
     );
 
@@ -284,13 +288,13 @@ export const listAllFinishedService = async () => {
       client: true,
       created_at: true,
       updated_at: true,
-      comment: true,
       code: true,
       status: true,
       product_orders: {
         select: {
           id: true,
           quantity: true,
+          comment: true,
           product: {
             select: {
               name: true,
@@ -311,7 +315,7 @@ export const listAllFinishedService = async () => {
 
   const pricedList = list.map(order => {
     const priceTotal = order.product_orders.reduce(
-      (acc, curr) => acc + curr.quantity * curr.product.price,
+      (acc: number, curr) => acc + curr.quantity * curr.product.price,
       0,
     );
 
@@ -336,13 +340,13 @@ export const listAllRefusedService = async () => {
       client: true,
       created_at: true,
       updated_at: true,
-      comment: true,
       code: true,
       status: true,
       product_orders: {
         select: {
           id: true,
           quantity: true,
+          comment: true,
           product: {
             select: {
               name: true,
@@ -364,7 +368,7 @@ export const listAllRefusedService = async () => {
 
   const pricedList = list.map(order => {
     const priceTotal = order.product_orders.reduce(
-      (acc, curr) => acc + curr.quantity * curr.product.price,
+      (acc: number, curr) => acc + curr.quantity * curr.product.price,
       0,
     );
 

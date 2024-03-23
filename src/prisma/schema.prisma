@@ -43,7 +43,6 @@ model orders {
   client            String?          @default("Nome não informado") @db.VarChar(120)
   reason_of_refusal String?          @db.VarChar(140)
   code              Int              @default(autoincrement()) @db.Integer()
-  comment           String?          @db.VarChar(200)
 }
 
 model product_orders {
@@ -53,4 +52,5 @@ model product_orders {
   product_id String
   product    product @relation(fields: [product_id], references: [id])
   quantity   Int     @db.Integer()
+  comment    String? @db.VarChar(200)
 }

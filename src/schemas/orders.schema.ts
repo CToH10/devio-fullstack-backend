@@ -3,9 +3,12 @@ import { z } from 'zod';
 export const orderRequestSchema = z.object({
   client: z.string().max(120).default('Nome não informado').nullable(),
   products: z.array(
-    z.object({ products_id: z.string(), quantity: z.number().min(0).int() }),
+    z.object({
+      products_id: z.string(),
+      quantity: z.number().min(0).int(),
+      comment: z.string().max(200).nullish(),
+    }),
   ),
-  comment: z.string().max(200).nullish(),
 });
 
 export const orderReturnSchema = orderRequestSchema
@@ -25,6 +28,7 @@ export const orderReturnSchema = orderRequestSchema
           price: z.number(),
         }),
         quantity: z.number().min(0).int(),
+        comment: z.string().max(200).nullish(),
       }),
     ),
     priceTotal: z.number(),
