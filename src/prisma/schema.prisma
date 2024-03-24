@@ -46,11 +46,29 @@ model orders {
 }
 
 model product_orders {
-  id         String  @id @default(uuid())
-  order_id   String
-  order      orders  @relation(fields: [order_id], references: [id])
-  product_id String
-  product    product @relation(fields: [product_id], references: [id])
-  quantity   Int     @db.Integer()
-  comment    String? @db.VarChar(200)
+  id          String                @id @default(uuid())
+  order_id    String
+  order       orders                @relation(fields: [order_id], references: [id])
+  product_id  String
+  product     product               @relation(fields: [product_id], references: [id])
+  quantity    Int                   @db.Integer()
+  comment     String?               @db.VarChar(200)
+  additionals additional_on_order[]
+}
+
+model additional {
+  id             String                @id @default(uuid())
+  name           String                @unique @db.VarChar(50)
+  description    String                @db.VarChar(50)
+  price          Int                   @db.Integer()
+  product_orders additional_on_order[]
+}
+
+model additional_on_order {
+  product_order    product_orders @relation(fields: [product_order_id], references: [id])
+  product_order_id String
+  additional       additional     @relation(fields: [additional_id], references: [id])
+  additional_id    String
+
+  @@id([product_order_id, additional_id])
 }

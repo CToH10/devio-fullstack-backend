@@ -163,6 +163,36 @@ async function main() {
     },
   });
 
+  const bacon = await prisma.additional.upsert({
+    where: { name: 'Bacon' },
+    update: {},
+    create: {
+      name: 'Bacon',
+      description: '10g',
+      price: 1,
+    },
+  });
+
+  const cheddar = await prisma.additional.upsert({
+    where: { name: 'Cheddar' },
+    update: {},
+    create: {
+      name: 'Cheddar',
+      description: '10g',
+      price: 1,
+    },
+  });
+
+  const bbqSauce = await prisma.additional.upsert({
+    where: { name: 'Molho' },
+    update: {},
+    create: {
+      name: 'Molho',
+      description: 'Barbecue',
+      price: 1,
+    },
+  });
+
   console.log({
     burguer,
     fries,
@@ -176,6 +206,9 @@ async function main() {
     fullCombo2,
     iceCream2,
     icedTea2,
+    bacon,
+    cheddar,
+    bbqSauce,
   });
 }
 main()

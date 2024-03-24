@@ -7,6 +7,7 @@ export const orderRequestSchema = z.object({
       products_id: z.string(),
       quantity: z.number().min(0).int(),
       comment: z.string().max(200).nullish(),
+      additionals: z.array(z.string().max(50)).nullish(),
     }),
   ),
 });
@@ -29,6 +30,16 @@ export const orderReturnSchema = orderRequestSchema
         }),
         quantity: z.number().min(0).int(),
         comment: z.string().max(200).nullish(),
+        additionals: z
+          .array(
+            z.object({
+              additional: z.object({
+                name: z.string().max(50),
+                price: z.number().int(),
+              }),
+            }),
+          )
+          .nullish(),
       }),
     ),
     priceTotal: z.number(),

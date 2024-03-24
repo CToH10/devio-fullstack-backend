@@ -10,10 +10,45 @@ import {
   orderReturnSchema,
 } from '../schemas/orders.schema';
 
+const prodSelect = {
+  select: {
+    id: true,
+    quantity: true,
+    comment: true,
+    product: {
+      select: {
+        name: true,
+        cover_image: true,
+        price: true,
+        id: true,
+        category: true,
+      },
+    },
+    additionals: {
+      select: {
+        additional: {
+          select: {
+            name: true,
+            price: true,
+          },
+        },
+      },
+    },
+  },
+};
+
 export const createOrderService = async (data: OrderRequestType) => {
   const { client, products } = data;
 
   const idList = products.map(prod => prod.products_id);
+
+  const productOrderData = products.map(prod => {
+    return {
+      product_id: prod.products_id,
+      quantity: prod.quantity,
+      comment: prod.comment === undefined ? null : prod.comment,
+    };
+  });
 
   const createOrder = await prisma.orders.create({
     data: {
@@ -21,13 +56,7 @@ export const createOrderService = async (data: OrderRequestType) => {
       products_id: idList,
       product_orders: {
         createMany: {
-          data: products.map(prod => {
-            return {
-              product_id: prod.products_id,
-              quantity: prod.quantity,
-              comment: prod.comment === undefined ? null : prod.comment,
-            };
-          }),
+          data: productOrderData,
         },
       },
     },
@@ -38,22 +67,64 @@ export const createOrderService = async (data: OrderRequestType) => {
       updated_at: true,
       code: true,
       status: true,
-      product_orders: {
-        select: {
-          id: true,
-          quantity: true,
-          comment: true,
-          product: {
-            select: {
-              name: true,
-              cover_image: true,
-              price: true,
-              id: true,
-              category: true,
-            },
+      product_orders: prodSelect,
+    },
+  });
+
+  const additionals = products.map(prod => {
+    if (prod.additionals) {
+      return {
+        additionals: prod.additionals,
+        product_id: prod.products_id,
+      };
+    }
+  });
+
+  const productOrder = createOrder.product_orders;
+
+  const merged = [];
+
+  for (let i = 0; i < additionals.length; i++) {
+    merged.push({
+      additional_id: additionals[i]?.additionals,
+      product_order_id: productOrder.find(
+        itmInner => itmInner.product.id === additionals[i]?.product_id,
+      )?.id,
+    });
+  }
+
+  const addOnOrderData = merged.map(item =>
+    item.additional_id?.map(add => {
+      return {
+        additional_id: add,
+        product_order_id: item.product_order_id || '',
+      };
+    }),
+  );
+
+  addOnOrderData.map(addData =>
+    addData?.map(async dataToAdd => {
+      if (dataToAdd.product_order_id) {
+        await prisma.additional_on_order.create({
+          data: dataToAdd,
+          include: {
+            product_order: true,
           },
-        },
-      },
+        });
+      }
+    }),
+  );
+
+  const order = await prisma.orders.findUnique({
+    where: { id: createOrder.id },
+    select: {
+      id: true,
+      client: true,
+      created_at: true,
+      updated_at: true,
+      code: true,
+      status: true,
+      product_orders: prodSelect,
     },
   });
 
@@ -62,7 +133,7 @@ export const createOrderService = async (data: OrderRequestType) => {
     0,
   );
 
-  const returnObj = { ...createOrder, priceTotal };
+  const returnObj = { ...order, priceTotal };
 
   return orderReturnSchema.parse(returnObj);
 };
@@ -76,22 +147,7 @@ export const listAllOrdersService = async () => {
       updated_at: true,
       code: true,
       status: true,
-      product_orders: {
-        select: {
-          id: true,
-          quantity: true,
-          comment: true,
-          product: {
-            select: {
-              name: true,
-              cover_image: true,
-              price: true,
-              id: true,
-              category: true,
-            },
-          },
-        },
-      },
+      product_orders: prodSelect,
     },
     orderBy: {
       code: 'asc',
@@ -122,22 +178,7 @@ export const listAOrderService = async (id: string) => {
       updated_at: true,
       code: true,
       status: true,
-      product_orders: {
-        select: {
-          id: true,
-          quantity: true,
-          comment: true,
-          product: {
-            select: {
-              name: true,
-              cover_image: true,
-              price: true,
-              id: true,
-              category: true,
-            },
-          },
-        },
-      },
+      product_orders: prodSelect,
     },
   });
 
@@ -186,22 +227,7 @@ export const updateOrderService = async (
       updated_at: true,
       code: true,
       status: true,
-      product_orders: {
-        select: {
-          id: true,
-          quantity: true,
-          comment: true,
-          product: {
-            select: {
-              name: true,
-              cover_image: true,
-              price: true,
-              id: true,
-              category: true,
-            },
-          },
-        },
-      },
+      product_orders: prodSelect,
     },
   });
 
@@ -238,23 +264,7 @@ export const listAllCheckoutService = async () => {
       updated_at: true,
       code: true,
       status: true,
-      product_orders: {
-        select: {
-          id: true,
-          quantity: true,
-          comment: true,
-          product: {
-            select: {
-              name: true,
-              cover_image: true,
-              price: true,
-              id: true,
-              description: true,
-              category: true,
-            },
-          },
-        },
-      },
+      product_orders: prodSelect,
     },
     orderBy: {
       code: 'asc',
@@ -290,23 +300,7 @@ export const listAllFinishedService = async () => {
       updated_at: true,
       code: true,
       status: true,
-      product_orders: {
-        select: {
-          id: true,
-          quantity: true,
-          comment: true,
-          product: {
-            select: {
-              name: true,
-              cover_image: true,
-              price: true,
-              id: true,
-              description: true,
-              category: true,
-            },
-          },
-        },
-      },
+      product_orders: prodSelect,
     },
     orderBy: {
       code: 'asc',
@@ -342,23 +336,7 @@ export const listAllRefusedService = async () => {
       updated_at: true,
       code: true,
       status: true,
-      product_orders: {
-        select: {
-          id: true,
-          quantity: true,
-          comment: true,
-          product: {
-            select: {
-              name: true,
-              cover_image: true,
-              price: true,
-              id: true,
-              description: true,
-              category: true,
-            },
-          },
-        },
-      },
+      product_orders: prodSelect,
       reason_of_refusal: true,
     },
     orderBy: {
