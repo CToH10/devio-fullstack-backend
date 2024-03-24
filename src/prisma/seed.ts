@@ -170,6 +170,8 @@ async function main() {
       name: 'Bacon',
       description: '10g',
       price: 1,
+      cover_image:
+        'https://img.freepik.com/psd-premium/fatias-de-bacon-isoladas-em-transparente-png-psd_888962-596.jpg?w=900',
     },
   });
 
@@ -180,6 +182,8 @@ async function main() {
       name: 'Cheddar',
       description: '10g',
       price: 1,
+      cover_image:
+        'https://img.freepik.com/psd-premium/fatias-de-bacon-isoladas-em-transparente-png-psd_888962-596.jpg?w=900',
     },
   });
 
@@ -190,6 +194,8 @@ async function main() {
       name: 'Molho',
       description: 'Barbecue',
       price: 1,
+      cover_image:
+        'https://img.freepik.com/psd-premium/fatias-de-bacon-isoladas-em-transparente-png-psd_888962-596.jpg?w=900',
     },
   });
 
