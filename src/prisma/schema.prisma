@@ -61,6 +61,7 @@ model additional {
   name           String                @unique @db.VarChar(50)
   description    String                @db.VarChar(50)
   price          Int                   @db.Integer()
+  cover_image    String                @db.VarChar(300)
   product_orders additional_on_order[]
 }
 
