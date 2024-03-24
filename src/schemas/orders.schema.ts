@@ -17,7 +17,7 @@ export const orderReturnSchema = orderRequestSchema
     id: z.string().uuid(),
     created_at: z.string().datetime().or(z.date()),
     updated_at: z.string().datetime().or(z.date()),
-    reason_of_refusal: z.string().optional(),
+    reason_of_refusal: z.string().optional().nullish(),
     product_orders: z.array(
       z.object({
         product: z.object({
