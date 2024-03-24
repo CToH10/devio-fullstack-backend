@@ -129,10 +129,16 @@ export const createOrderService = async (data: OrderRequestType) => {
   });
 
   const additionalsTotal = order.product_orders
-    .map(od => od.additionals.map(add => add.additional))
-    .map(item => item.map(i => i.price))
-    .reduce((elem1, elem2) => elem1.concat(elem2))
-    .reduce((acc: number, curr) => acc + curr, 0);
+    .map(od => {
+      return {
+        additionals: od.additionals
+          .map(add => add.additional.price)
+          .reduce((acc, curr) => acc + curr, 0),
+        quantity: od.quantity,
+      };
+    })
+    .map(total => total.additionals * total.quantity)
+    .reduce((acc, curr) => acc + curr);
 
   const priceTotal =
     order.product_orders.reduce(
@@ -163,10 +169,16 @@ export const listAllOrdersService = async () => {
 
   const pricedList = list.map(order => {
     const additionalsTotal = order.product_orders
-      .map(od => od.additionals.map(add => add.additional))
-      .map(item => item.map(i => i.price))
-      .reduce((elem1, elem2) => elem1.concat(elem2))
-      .reduce((acc: number, curr) => acc + curr, 0);
+      .map(od => {
+        return {
+          additionals: od.additionals
+            .map(add => add.additional.price)
+            .reduce((acc, curr) => acc + curr, 0),
+          quantity: od.quantity,
+        };
+      })
+      .map(total => total.additionals * total.quantity)
+      .reduce((acc, curr) => acc + curr);
 
     const priceTotal =
       order.product_orders.reduce(
@@ -197,10 +209,16 @@ export const listAOrderService = async (id: string) => {
   });
 
   const additionalsTotal = order.product_orders
-    .map(od => od.additionals.map(add => add.additional))
-    .map(item => item.map(i => i.price))
-    .reduce((elem1, elem2) => elem1.concat(elem2))
-    .reduce((acc: number, curr) => acc + curr, 0);
+    .map(od => {
+      return {
+        additionals: od.additionals
+          .map(add => add.additional.price)
+          .reduce((acc, curr) => acc + curr, 0),
+        quantity: od.quantity,
+      };
+    })
+    .map(total => total.additionals * total.quantity)
+    .reduce((acc, curr) => acc + curr);
 
   const priceTotal =
     order.product_orders.reduce(
@@ -301,10 +319,16 @@ export const listAllCheckoutService = async () => {
 
   const pricedList = list.map(order => {
     const additionalsTotal = order.product_orders
-      .map(od => od.additionals.map(add => add.additional))
-      .map(item => item.map(i => i.price))
-      .reduce((elem1, elem2) => elem1.concat(elem2))
-      .reduce((acc: number, curr) => acc + curr, 0);
+      .map(od => {
+        return {
+          additionals: od.additionals
+            .map(add => add.additional.price)
+            .reduce((acc, curr) => acc + curr, 0),
+          quantity: od.quantity,
+        };
+      })
+      .map(total => total.additionals * total.quantity)
+      .reduce((acc, curr) => acc + curr);
 
     const priceTotal =
       order.product_orders.reduce(
@@ -344,10 +368,16 @@ export const listAllFinishedService = async () => {
 
   const pricedList = list.map(order => {
     const additionalsTotal = order.product_orders
-      .map(od => od.additionals.map(add => add.additional))
-      .map(item => item.map(i => i.price))
-      .reduce((elem1, elem2) => elem1.concat(elem2))
-      .reduce((acc: number, curr) => acc + curr, 0);
+      .map(od => {
+        return {
+          additionals: od.additionals
+            .map(add => add.additional.price)
+            .reduce((acc, curr) => acc + curr, 0),
+          quantity: od.quantity,
+        };
+      })
+      .map(total => total.additionals * total.quantity)
+      .reduce((acc, curr) => acc + curr);
 
     const priceTotal =
       order.product_orders.reduce(
@@ -388,10 +418,16 @@ export const listAllRefusedService = async () => {
 
   const pricedList = list.map(order => {
     const additionalsTotal = order.product_orders
-      .map(od => od.additionals.map(add => add.additional))
-      .map(item => item.map(i => i.price))
-      .reduce((elem1, elem2) => elem1.concat(elem2))
-      .reduce((acc: number, curr) => acc + curr, 0);
+      .map(od => {
+        return {
+          additionals: od.additionals
+            .map(add => add.additional.price)
+            .reduce((acc, curr) => acc + curr, 0),
+          quantity: od.quantity,
+        };
+      })
+      .map(total => total.additionals * total.quantity)
+      .reduce((acc, curr) => acc + curr);
 
     const priceTotal =
       order.product_orders.reduce(
