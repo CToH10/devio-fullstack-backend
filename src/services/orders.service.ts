@@ -115,7 +115,7 @@ export const createOrderService = async (data: OrderRequestType) => {
     }),
   );
 
-  const order = await prisma.orders.findUnique({
+  const order = await prisma.orders.findUniqueOrThrow({
     where: { id: createOrder.id },
     select: {
       id: true,
@@ -128,10 +128,17 @@ export const createOrderService = async (data: OrderRequestType) => {
     },
   });
 
-  const priceTotal = createOrder.product_orders.reduce(
-    (acc: number, curr) => acc + curr.quantity * curr.product.price,
-    0,
-  );
+  const additionalsTotal = order.product_orders
+    .map(od => od.additionals.map(add => add.additional))
+    .map(item => item.map(i => i.price))
+    .reduce((elem1, elem2) => elem1.concat(elem2))
+    .reduce((acc: number, curr) => acc + curr, 0);
+
+  const priceTotal =
+    order.product_orders.reduce(
+      (acc: number, curr) => acc + curr.quantity * curr.product.price,
+      0,
+    ) + additionalsTotal;
 
   const returnObj = { ...order, priceTotal };
 
@@ -155,10 +162,17 @@ export const listAllOrdersService = async () => {
   });
 
   const pricedList = list.map(order => {
-    const priceTotal = order.product_orders.reduce(
-      (acc: number, curr) => acc + curr.quantity * curr.product.price,
-      0,
-    );
+    const additionalsTotal = order.product_orders
+      .map(od => od.additionals.map(add => add.additional))
+      .map(item => item.map(i => i.price))
+      .reduce((elem1, elem2) => elem1.concat(elem2))
+      .reduce((acc: number, curr) => acc + curr, 0);
+
+    const priceTotal =
+      order.product_orders.reduce(
+        (acc: number, curr) => acc + curr.quantity * curr.product.price,
+        0,
+      ) + additionalsTotal;
 
     return { ...order, priceTotal };
   });
@@ -182,10 +196,17 @@ export const listAOrderService = async (id: string) => {
     },
   });
 
-  const priceTotal = order.product_orders.reduce(
-    (acc: number, curr) => acc + curr.quantity * curr.product.price,
-    0,
-  );
+  const additionalsTotal = order.product_orders
+    .map(od => od.additionals.map(add => add.additional))
+    .map(item => item.map(i => i.price))
+    .reduce((elem1, elem2) => elem1.concat(elem2))
+    .reduce((acc: number, curr) => acc + curr, 0);
+
+  const priceTotal =
+    order.product_orders.reduce(
+      (acc: number, curr) => acc + curr.quantity * curr.product.price,
+      0,
+    ) + additionalsTotal;
 
   const returnObj = { ...order, priceTotal };
 
@@ -231,10 +252,17 @@ export const updateOrderService = async (
     },
   });
 
-  const priceTotal = updatedOrder.product_orders.reduce(
-    (acc: number, curr) => acc + curr.quantity * curr.product.price,
-    0,
-  );
+  const additionalsTotal = updatedOrder.product_orders
+    .map(od => od.additionals.map(add => add.additional))
+    .map(item => item.map(i => i.price))
+    .reduce((elem1, elem2) => elem1.concat(elem2))
+    .reduce((acc: number, curr) => acc + curr, 0);
+
+  const priceTotal =
+    updatedOrder.product_orders.reduce(
+      (acc: number, curr) => acc + curr.quantity * curr.product.price,
+      0,
+    ) + additionalsTotal;
 
   const returnObj = { ...updatedOrder, priceTotal };
 
@@ -272,10 +300,17 @@ export const listAllCheckoutService = async () => {
   });
 
   const pricedList = list.map(order => {
-    const priceTotal = order.product_orders.reduce(
-      (acc: number, curr) => acc + curr.quantity * curr.product.price,
-      0,
-    );
+    const additionalsTotal = order.product_orders
+      .map(od => od.additionals.map(add => add.additional))
+      .map(item => item.map(i => i.price))
+      .reduce((elem1, elem2) => elem1.concat(elem2))
+      .reduce((acc: number, curr) => acc + curr, 0);
+
+    const priceTotal =
+      order.product_orders.reduce(
+        (acc: number, curr) => acc + curr.quantity * curr.product.price,
+        0,
+      ) + additionalsTotal;
 
     return { ...order, priceTotal };
   });
@@ -308,10 +343,17 @@ export const listAllFinishedService = async () => {
   });
 
   const pricedList = list.map(order => {
-    const priceTotal = order.product_orders.reduce(
-      (acc: number, curr) => acc + curr.quantity * curr.product.price,
-      0,
-    );
+    const additionalsTotal = order.product_orders
+      .map(od => od.additionals.map(add => add.additional))
+      .map(item => item.map(i => i.price))
+      .reduce((elem1, elem2) => elem1.concat(elem2))
+      .reduce((acc: number, curr) => acc + curr, 0);
+
+    const priceTotal =
+      order.product_orders.reduce(
+        (acc: number, curr) => acc + curr.quantity * curr.product.price,
+        0,
+      ) + additionalsTotal;
 
     return { ...order, priceTotal };
   });
@@ -345,10 +387,17 @@ export const listAllRefusedService = async () => {
   });
 
   const pricedList = list.map(order => {
-    const priceTotal = order.product_orders.reduce(
-      (acc: number, curr) => acc + curr.quantity * curr.product.price,
-      0,
-    );
+    const additionalsTotal = order.product_orders
+      .map(od => od.additionals.map(add => add.additional))
+      .map(item => item.map(i => i.price))
+      .reduce((elem1, elem2) => elem1.concat(elem2))
+      .reduce((acc: number, curr) => acc + curr, 0);
+
+    const priceTotal =
+      order.product_orders.reduce(
+        (acc: number, curr) => acc + curr.quantity * curr.product.price,
+        0,
+      ) + additionalsTotal;
 
     return { ...order, priceTotal };
   });
