@@ -10,8 +10,9 @@ export default {
     status: OrderStatusEnum as unknown as OrderStatusMock,
     created_at: new Date(),
     updated_at: new Date(),
-    products_id: `${randomUUID()}`,
+    products_id: [`${randomUUID()}`],
     client: 'Josevaldo',
+    code: 1,
   },
   orderWithoutClient: {
     id: randomUUID(),
@@ -19,7 +20,8 @@ export default {
     status: OrderStatusEnum as unknown as OrderStatusMock,
     created_at: new Date(),
     updated_at: new Date(),
-    products_id: `${randomUUID()}`,
+    products_id: [`${randomUUID()}`],
+    code: 1,
   },
   orderWithoutProducts: {
     id: randomUUID(),
@@ -28,6 +30,7 @@ export default {
     created_at: new Date(),
     updated_at: new Date(),
     client: 'Josevaldo',
+    code: 1,
   },
   orderInvalidProducts: {
     id: randomUUID(),
@@ -44,7 +47,8 @@ export default {
     status: OrderStatusEnum as unknown as OrderStatusMock,
     created_at: new Date(),
     updated_at: new Date(),
-    products_id: `${randomUUID()}`,
+    products_id: [`${randomUUID()}`],
     client: 123456,
+    code: 1,
   },
 };
