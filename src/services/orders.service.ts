@@ -37,6 +37,43 @@ const prodSelect = {
   },
 };
 
+export const listAnOrderService = async (id: string) => {
+  const order = await prisma.orders.findFirstOrThrow({
+    where: { id },
+    select: {
+      id: true,
+      client: true,
+      created_at: true,
+      updated_at: true,
+      code: true,
+      status: true,
+      product_orders: prodSelect,
+    },
+  });
+
+  const additionalsTotal = order.product_orders
+    .map(od => {
+      return {
+        additionals: od.additionals
+          .map(add => add.additional.price)
+          .reduce((acc, curr) => acc + curr, 0),
+        quantity: od.quantity,
+      };
+    })
+    .map(total => total.additionals * total.quantity)
+    .reduce((acc, curr) => acc + curr);
+
+  const priceTotal =
+    order.product_orders.reduce(
+      (acc: number, curr) => acc + curr.quantity * curr.product.price,
+      0,
+    ) + additionalsTotal;
+
+  const returnObj = { ...order, priceTotal };
+
+  return orderReturnSchema.parse(returnObj);
+};
+
 export const createOrderService = async (data: OrderRequestType) => {
   const { client, products } = data;
 
@@ -115,40 +152,9 @@ export const createOrderService = async (data: OrderRequestType) => {
     }),
   );
 
-  const order = await prisma.orders.findUniqueOrThrow({
-    where: { id: createOrder.id },
-    select: {
-      id: true,
-      client: true,
-      created_at: true,
-      updated_at: true,
-      code: true,
-      status: true,
-      product_orders: prodSelect,
-    },
-  });
+  const order = await listAnOrderService(createOrder.id);
 
-  const additionalsTotal = order.product_orders
-    .map(od => {
-      return {
-        additionals: od.additionals
-          .map(add => add.additional.price)
-          .reduce((acc, curr) => acc + curr, 0),
-        quantity: od.quantity,
-      };
-    })
-    .map(total => total.additionals * total.quantity)
-    .reduce((acc, curr) => acc + curr);
-
-  const priceTotal =
-    order.product_orders.reduce(
-      (acc: number, curr) => acc + curr.quantity * curr.product.price,
-      0,
-    ) + additionalsTotal;
-
-  const returnObj = { ...order, priceTotal };
-
-  return orderReturnSchema.parse(returnObj);
+  return orderReturnSchema.parse(order);
 };
 
 export const listAllOrdersService = async () => {
@@ -194,43 +200,6 @@ export const listAllOrdersService = async () => {
   return parsedList;
 };
 
-export const listAnOrderService = async (id: string) => {
-  const order = await prisma.orders.findFirstOrThrow({
-    where: { id },
-    select: {
-      id: true,
-      client: true,
-      created_at: true,
-      updated_at: true,
-      code: true,
-      status: true,
-      product_orders: prodSelect,
-    },
-  });
-
-  const additionalsTotal = order.product_orders
-    .map(od => {
-      return {
-        additionals: od.additionals
-          .map(add => add.additional.price)
-          .reduce((acc, curr) => acc + curr, 0),
-        quantity: od.quantity,
-      };
-    })
-    .map(total => total.additionals * total.quantity)
-    .reduce((acc, curr) => acc + curr);
-
-  const priceTotal =
-    order.product_orders.reduce(
-      (acc: number, curr) => acc + curr.quantity * curr.product.price,
-      0,
-    ) + additionalsTotal;
-
-  const returnObj = { ...order, priceTotal };
-
-  return orderReturnSchema.parse(returnObj);
-};
-
 export const updateOrderService = async (
   requestData: OrderUpdateRequestType,
   id: string,
@@ -271,10 +240,16 @@ export const updateOrderService = async (
   });
 
   const additionalsTotal = updatedOrder.product_orders
-    .map(od => od.additionals.map(add => add.additional))
-    .map(item => item.map(i => i.price))
-    .reduce((elem1, elem2) => elem1.concat(elem2))
-    .reduce((acc: number, curr) => acc + curr, 0);
+    .map(od => {
+      return {
+        additionals: od.additionals
+          .map(add => add.additional.price)
+          .reduce((acc, curr) => acc + curr, 0),
+        quantity: od.quantity,
+      };
+    })
+    .map(total => total.additionals * total.quantity)
+    .reduce((acc, curr) => acc + curr);
 
   const priceTotal =
     updatedOrder.product_orders.reduce(
