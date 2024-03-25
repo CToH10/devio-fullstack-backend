@@ -2,11 +2,12 @@
 import { Request, Response } from 'express';
 import {
   createOrderService,
-  listAOrderService,
+  deleteAnOrderService,
   listAllCheckoutService,
   listAllFinishedService,
   listAllOrdersService,
   listAllRefusedService,
+  listAnOrderService,
   updateOrderService,
 } from '../services/orders.service';
 
@@ -66,13 +67,24 @@ export const listAllRefusedController = async (
   return response.json(listRefused);
 };
 
-export const listAOrderController = async (
+export const listAnOrderController = async (
   request: Request,
   response: Response,
 ) => {
   const { id } = request.params;
 
-  const order = await listAOrderService(id.trim());
+  const order = await listAnOrderService(id.trim());
 
   return response.json(order);
+};
+
+export const deleteAnOrderController = async (
+  request: Request,
+  response: Response,
+) => {
+  const { id } = request.params;
+
+  await deleteAnOrderService(id);
+
+  return response.status(204).json();
 };

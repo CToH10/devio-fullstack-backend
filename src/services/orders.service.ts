@@ -194,7 +194,7 @@ export const listAllOrdersService = async () => {
   return parsedList;
 };
 
-export const listAOrderService = async (id: string) => {
+export const listAnOrderService = async (id: string) => {
   const order = await prisma.orders.findFirstOrThrow({
     where: { id },
     select: {
@@ -236,7 +236,7 @@ export const updateOrderService = async (
   id: string,
 ) => {
   const { status, client } = requestData;
-  const clientOrder = await (await listAOrderService(id)).client;
+  const clientOrder = await (await listAnOrderService(id)).client;
   if (
     status === 'preparing' &&
     !client &&
@@ -444,4 +444,12 @@ export const listAllRefusedService = async () => {
   };
 
   return listReturn;
+};
+
+export const deleteAnOrderService = async (id: string) => {
+  await prisma.orders.delete({
+    where: {
+      id,
+    },
+  });
 };
