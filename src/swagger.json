@@ -1,0 +1,340 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "version": "v1.0.0",
+      "title": "fast_food_API",
+      "description": "API developed for Devio technical test"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3001"
+      },
+      {
+        "url":"https://devio-fullstack-backend.onrender.com"
+      }
+    ],
+    "paths": {
+        "/add": {
+            "get": {
+                "description":"",
+                "responses": {
+                    "200": {
+                        "description": "List all additional ingredients",
+                        "content":{
+                            "application/json": {
+                                "schema":{
+                                    "$ref": "#/components/schemas/additional"
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        },
+      "/products/{search}": {
+        "get": {
+          "description": "Lists all products. If a search parameter is provided, will search for a match with 'name', 'category' or 'id'",
+          "parameters": [
+            {
+              "name": "search",
+              "in": "path",
+              "required": false,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "perPage",
+              "in": "query",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "page",
+              "in": "query",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref":"#/components/schemas/productArray"
+                    }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/orders": {
+        "get": {
+          "description": "Lists all orders",
+          "responses": {
+            "200": {
+              "description": "Returns refused orders",
+              "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/components/schemas/orderArray"
+                    }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/orders/{id}": {
+        "patch": {
+          "description": "",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          }
+        },
+        "get": {
+          "description": "Lists an order",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Returns an order by 'id'",
+              "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref":"#/components/schemas/order"
+                    }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/orders/checkout": {
+        "get": {
+          "description": "Lists all orders for kitchen sorting",
+          "responses": {
+            "200": {
+              "description": "Returns all 'preparing' and 'ready' orders",
+              "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/components/schemas/orderReturn"
+                    }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/orders/finished": {
+        "get": {
+          "description": "List all finished orders",
+          "responses": {
+            "200": {
+              "description": "Returns finished orders",
+              "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/components/schemas/orderReturn"
+                    }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/orders/refused": {
+        "get": {
+          "description": "Lists all refused orders",
+          "responses": {
+            "200": {
+              "description": "Returns all refused orders",
+              "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/components/schemas/orderReturn"
+                    }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "additional": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "cover_image": {
+                    "type": "string"
+                }
+            }
+        },
+        "product":{
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "cover_image": {
+                    "type": "string"
+                },
+                "category": {
+                    "type":"string",
+                    "enum": ["combo", "drink", "side", "dessert"]
+                },
+                "combo": {
+                    "type":"boolean",
+                    "example": false
+                }
+            }
+        },
+        "productArray": {
+            "type": "array",
+            "items": {
+                "$ref":"#/components/schemas/product"
+            }
+        },
+        "order": {
+          "properties": {
+            "id": {
+                "type": "string"
+            },
+            "client": {
+                "type": "string"
+            },
+            "created_at": {
+                "type": "string"
+            },
+            "updated_at": {
+                "type": "string"
+            },
+            "status": {
+                "type":"string",
+                "enum": ["ordering", "preparing", "ready", "finished", "refused"]
+            },
+            "code":{
+                "type": "number"
+            },
+            "product_orders": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "product": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/product"
+                            }
+                        },
+                        "quantity": {
+                            "type": "number"
+                        },
+                        "comment": {
+                            "type": "string",
+                            "nullable": true
+                        },
+                        "additionals": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "additional": {
+                                        "type": "object",
+                                        "properties":{
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "price": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                },
+                                "nullable":true
+                            }
+                        }
+                    }
+                }
+            },
+            "priceTotal": {
+                "type": "number"
+            }
+          }
+        },
+        "orderArray":{
+            "type": "array",
+            "items": {
+                "$ref":"#/components/schemas/order"
+            }
+        },
+        "orderReturn": {
+            "properties": {
+                "count": {
+                    "type": "number"
+                },
+                "previousPage": {
+                    "type": "string",
+                    "nullable": true
+                },
+                "nextPage": {
+                    "type": "string",
+                    "nullable": true
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/order"
+                    }
+                }
+            }
+        }
+      }
+    }
+  }
